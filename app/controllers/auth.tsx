@@ -27,7 +27,7 @@ async function handleAuthAction(request: Request, action: string) {
   if (action === 'login') {
     const result = loginSchema.safeParse(data)
     if (!result.success) {
-      return render(<AuthPage action="login" error={result.error.errors[0].message} />, request, { status: 400 })
+      return render(<AuthPage action="login" error={result.error.issues[0].message} />, request, { status: 400 })
     }
 
     const user = await db.user.findUnique({
@@ -51,7 +51,7 @@ async function handleAuthAction(request: Request, action: string) {
   if (action === 'register') {
     const result = registerSchema.safeParse(data)
     if (!result.success) {
-      return render(<AuthPage action="register" error={result.error.errors[0].message} />, request, { status: 400 })
+      return render(<AuthPage action="register" error={result.error.issues[0].message} />, request, { status: 400 })
     }
 
     const existing = await db.user.findUnique({
