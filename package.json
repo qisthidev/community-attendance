@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch server.ts",
-    "start": "tsx server.ts",
+    "build:css": "node build-css.js",
+    "dev": "npm run build:css && tsx watch server.ts",
+    "start": "npm run build:css && tsx server.ts",
     "test": "tsx --test",
     "typecheck": "tsc --noEmit"
   },
@@ -22,6 +23,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "latest",
     "@types/qrcode": "^1.5.6",
