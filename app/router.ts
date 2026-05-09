@@ -1,6 +1,6 @@
 import { createRouter } from 'remix/fetch-router'
 import { readFile } from 'node:fs/promises'
-import { join, resolve, sep } from 'node:path'
+import { join, relative, resolve } from 'node:path'
 
 import { assets } from './assets.ts'
 import { auth } from './controllers/auth.tsx'
@@ -25,12 +25,18 @@ router.get('/styles/*path', async ({ request }) => {
   const stylesDir = join(process.cwd(), 'app', 'styles')
 
   try {
-    if (!pathname.endsWith('.css')) {
+    if (pathname.endsWith('/') || pathname.includes('\0')) {
+      return new Response('Not Found', { status: 404 })
+    }
+
+    const fileName = pathname.split('/').at(-1) ?? ''
+    if (!fileName || !fileName.toLowerCase().endsWith('.css')) {
       return new Response('Not Found', { status: 404 })
     }
 
     const cssPath = resolve(stylesDir, pathname)
-    if (cssPath === stylesDir || !cssPath.startsWith(stylesDir + sep)) {
+    const relativePath = relative(stylesDir, cssPath)
+    if (!relativePath || relativePath === '..' || relativePath.startsWith('..')) {
       return new Response('Not Found', { status: 404 })
     }
 
