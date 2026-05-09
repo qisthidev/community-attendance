@@ -114,8 +114,10 @@ async function main() {
   const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
   const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-  const event1 = await prisma.event.create({
-    data: {
+  const event1 = await prisma.event.upsert({
+    where: { qrCode: 'event-qr-001' },
+    update: {},
+    create: {
       title: 'Weekly Community Meetup',
       description: 'Join us for our weekly community gathering and networking session.',
       type: 'meeting',
@@ -128,8 +130,10 @@ async function main() {
     },
   })
 
-  const event2 = await prisma.event.create({
-    data: {
+  const event2 = await prisma.event.upsert({
+    where: { qrCode: 'event-qr-002' },
+    update: {},
+    create: {
       title: 'Tech Workshop: Web Development',
       description: 'Learn modern web development techniques and best practices.',
       type: 'workshop',
@@ -141,8 +145,10 @@ async function main() {
     },
   })
 
-  const event3 = await prisma.event.create({
-    data: {
+  const event3 = await prisma.event.upsert({
+    where: { qrCode: 'event-qr-003' },
+    update: {},
+    create: {
       title: 'Community Social Gathering',
       description: 'Past event - social gathering for all members.',
       type: 'gathering',
@@ -155,6 +161,13 @@ async function main() {
   })
 
   console.log('✓ Created events:', event1.title, event2.title, event3.title)
+
+  // Delete existing attendance records for event3 to avoid duplicates
+  await prisma.attendance.deleteMany({
+    where: {
+      eventId: event3.id,
+    },
+  })
 
   // Create attendance records for past event
   await prisma.attendance.create({
