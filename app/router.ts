@@ -1,6 +1,6 @@
 import { createRouter } from 'remix/fetch-router'
 import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, resolve, sep } from 'node:path'
 
 import { assets } from './assets.ts'
 import { auth } from './controllers/auth.tsx'
@@ -21,10 +21,19 @@ router.get(routes.assets, async ({ request }) => {
 // Serve static CSS files with Tailwind processing
 router.get('/styles/*path', async ({ request }) => {
   const url = new URL(request.url)
-  const pathname = url.pathname.replace('/styles/', '')
+  const pathname = decodeURIComponent(url.pathname.replace('/styles/', ''))
+  const stylesDir = join(process.cwd(), 'app', 'styles')
 
   try {
-    const cssPath = join(process.cwd(), 'app', 'styles', pathname)
+    if (!pathname.endsWith('.css')) {
+      return new Response('Not Found', { status: 404 })
+    }
+
+    const cssPath = resolve(stylesDir, pathname)
+    if (cssPath !== stylesDir && !cssPath.startsWith(stylesDir + sep)) {
+      return new Response('Not Found', { status: 404 })
+    }
+
     let content = await readFile(cssPath, 'utf-8')
 
     // Simple replacement for Tailwind v4 import syntax
