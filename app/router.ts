@@ -30,7 +30,7 @@ router.get('/styles/*path', async ({ request }) => {
     }
 
     const cssPath = resolve(stylesDir, pathname)
-    if (cssPath !== stylesDir && !cssPath.startsWith(stylesDir + sep)) {
+    if (cssPath === stylesDir || !cssPath.startsWith(stylesDir + sep)) {
       return new Response('Not Found', { status: 404 })
     }
 
