@@ -196,7 +196,7 @@ img, svg, video { display: block; vertical-align: middle; max-width: 100%; heigh
     return new Response(content, {
       headers: {
         'Content-Type': 'text/css',
-        'Cache-Control': process.env.NODE_ENV === 'production' ? 'public, max-age=31536000' : 'no-cache',
+        'Cache-Control': process.env.NODE_ENV === 'production' ? 'public, max-age=0, must-revalidate' : 'no-cache',
       },
     })
   } catch (error) {
