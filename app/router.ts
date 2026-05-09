@@ -39,9 +39,7 @@ router.get('/styles/*path', async ({ request }) => {
     if (
       !relativePath ||
       relativePath === '..' ||
-      relativePath.startsWith(`..${sep}`) ||
-      relativePath.startsWith('../') ||
-      relativePath.startsWith('..\\')
+      relativePath.startsWith(`..${sep}`)
     ) {
       return new Response('Not Found', { status: 404 })
     }
